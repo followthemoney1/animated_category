@@ -2,15 +2,11 @@
 
 Flutter library for picking category
 
-## Getting Started
-
 ## Example
-
+Or you can check full example video in files ```video.mp4```
 ![GitHub Logo](gif.gif?raw=true)
-![GitHub Logo](logo.video?raw=true)
 
-
-## Usage
+## Getting Started
 
 First you need to add a library to `pubspec.yaml`:
 ```
@@ -23,7 +19,9 @@ Add to you files where used:
 import 'package:animated_category/animated_category.dart';
 ```
 
-Now you can using it like in example:
+
+## Usage
+
 ```
 AnimatedCategory<MyData>(
           childBuilder: (MyData item) {
