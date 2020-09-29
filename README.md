@@ -4,7 +4,7 @@ Flutter library for picking category
 
 ## Example
 Or you can check full example video in files ```video.mp4```
-![GitHub Logo](gif.gif?raw=true)
+![GitHub Logo](https://github.com/followthemoney1/animated_category/blob/master/gif.gif?raw=true)
 
 ## Getting Started
 
