@@ -1,6 +1,6 @@
 # animated_category_view
 
-https://socialify.git.ci/followthemoney1/animated_category/image?description=1&descriptionEditable=Flutter%20library%20for%20picking%20category&font=Raleway&forks=1&issues=1&language=1&owner=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Dark
+![GitHub Logo](https://socialify.git.ci/followthemoney1/animated_category/image?description=1&descriptionEditable=Flutter%20library%20for%20picking%20category&font=Raleway&forks=1&issues=1&language=1&owner=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Dark)
 
 Flutter library for picking category
 
