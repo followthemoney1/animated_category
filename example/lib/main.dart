@@ -15,13 +15,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page', key: UniqueKey(),),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({required Key key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(),
       body: Center(
         child: AnimatedCategory<MyData>(
-          childBuilder: (MyData item) {
+          childBuilder: (_,MyData item) {
             print(item.img);
             return Card(
               child: Image.network(item.img),
@@ -88,5 +88,5 @@ class _MyHomePageState extends State<MyHomePage> {
 class MyData {
   String img;
 
-  MyData({this.img});
+  MyData({required this.img});
 }

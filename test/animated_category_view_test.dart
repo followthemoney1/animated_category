@@ -5,6 +5,6 @@ import 'package:animated_category/animated_category.dart';
 
 void main() {
   test('adds one to input values', () {
-    final calculator = AnimatedCategory();
+   
   });
 }

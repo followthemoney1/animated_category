@@ -3,17 +3,16 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class SuggestionItem<T> {
-  T data;
-  String name;
-  int currentWeight = 1;
+  final T data;
+  int currentWeight;
   double width;
   double height;
   double x;
   double y;
-  int iRow;
-  int iColumn;
-  String image;
-  String icon;
+  int? iRow;
+  int? iColumn;
+  Key widgetKey;
+
   get selected => currentWeight > 1;
   get superLike => currentWeight == 3;
   get leftTop => x + y;
@@ -32,28 +31,26 @@ class SuggestionItem<T> {
   Rect get rect => Rect.fromLTWH(left, top, width, height);
 
   SuggestionItem({
-    this.data,
-    this.name,
-    this.image,
-    this.icon,
-    this.width,
-    this.height,
-    this.currentWeight,
-    this.x,
-    this.y,
+    required this.widgetKey,
+    required this.data,
+    required this.width,
+    required this.height,
+    this.currentWeight = 1,
+    required this.x,
+    required this.y,
   });
 }
 
 class CardItemWidget extends StatefulWidget {
   final Widget child;
-  final Color backgroundColor;
-  final IconData iconData;
+  final Color? backgroundColor;
+  final IconData? iconData;
   final int weight;
-  final double width;
-  final double height;
-  final String name;
-  final SuggestionItem el;
-  final String localImage;
+  final double? width;
+  final double? height;
+  final String? name;
+  final SuggestionItem? el;
+  final String? localImage;
   const CardItemWidget(
       {this.backgroundColor,
       this.iconData,
@@ -62,7 +59,7 @@ class CardItemWidget extends StatefulWidget {
       this.height,
       this.name,
       this.localImage,
-      @required this.child,
+      required this.child,
       this.el});
   @override
   State<StatefulWidget> createState() {
@@ -70,23 +67,22 @@ class CardItemWidget extends StatefulWidget {
   }
 }
 
-class CardItemWidgetState extends State<CardItemWidget>
-    with TickerProviderStateMixin {
+class CardItemWidgetState extends State<CardItemWidget> with TickerProviderStateMixin {
   final Shader linearGradient = LinearGradient(
     colors: <Color>[Color(0xFF9B51E0), Color(0xff5D3DF3)],
   ).createShader(Rect.fromLTWH(0.0, 0.0, 100.0, 70.0));
 
   @override
   Widget build(BuildContext context) {
-    final unselectedStyle = Theme.of(context).textTheme.headline5.copyWith(
-        color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold);
+    final unselectedStyle =
+        Theme.of(context).textTheme.headline5!.copyWith(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold);
 
-    final selectedStyle = Theme.of(context).textTheme.headline5.copyWith(
-        foreground: (Paint()..shader = linearGradient),
-        fontSize: 18,
-        fontWeight: FontWeight.bold);
-    final selected = widget.el.selected;
-    final superLike = widget.el.superLike;
+    final selectedStyle = Theme.of(context)
+        .textTheme
+        .headline5!
+        .copyWith(foreground: (Paint()..shader = linearGradient), fontSize: 18, fontWeight: FontWeight.bold);
+    final selected = widget.el!.selected;
+    final superLike = widget.el!.superLike;
 
     return widget.child;
 

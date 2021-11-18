@@ -8,11 +8,7 @@ import 'package:flutter/material.dart';
 
 extension StringExt on String {
   String trimSpaceAndLCase() {
-    String _ = this
-        .split(" ")
-        .join("")
-        .replaceAll(RegExp("[-=()*&^%#@!`~/:,.]"), "")
-        .toLowerCase();
+    String _ = this.split(" ").join("").replaceAll(RegExp("[-=()*&^%#@!`~/:,.]"), "").toLowerCase();
     return _;
   }
 }
@@ -30,8 +26,7 @@ extension WidgetExtension on Widget {
     );
   }
 
-  Widget paddingOnly(
-      {double left = 0, double right = 0, double top = 0, double bottom = 0}) {
+  Widget paddingOnly({double left = 0, double right = 0, double top = 0, double bottom = 0}) {
     return Container(
       color: Colors.transparent,
       child: Padding(
@@ -46,7 +41,7 @@ extension WidgetExtension on Widget {
     );
   }
 
-  Widget addOnTap({@required Function onTap, Function onLongPress}) {
+  Widget addOnTap({required Function()? onTap, Function()? onLongPress}) {
     return GestureDetector(
       child: Container(child: this),
       onTap: onTap,
@@ -81,15 +76,6 @@ extension WidgetExtension on Widget {
 //    return res;
 //  }
 //}
-
-//MARK: static methods
-Widget showSnackWithoutButton(
-    {@required BuildContext context, @required String text}) {
-  Scaffold.of(context).showSnackBar(SnackBar(
-    content: Text(text),
-    duration: Duration(seconds: 3),
-  ));
-}
 
 //extension HexColor on Color {
 //  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
