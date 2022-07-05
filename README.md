@@ -7,6 +7,10 @@ Flutter library for picking category. And now all over again. Initially, this ta
 Or you can check full example video in files ```video.mp4```
 ![GitHub Logo](https://github.com/followthemoney1/animated_category/blob/master/gif.gif?raw=true)
 
+## Example
+Or you can check full example video in files ```video.mp4```
+![GitHub Logo](https://github.com/followthemoney1/animated_category/blob/master/gif.gif?raw=true)
+
 ## Getting Started
 
 First you need to add a library to `pubspec.yaml`:
