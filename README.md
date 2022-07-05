@@ -5,6 +5,8 @@ Flutter library for picking category. And now all over again. Initially, this ta
 
 ## Example
 Or you can check full example video in files ```video.mp4```
+
+
 <img src="https://github.com/followthemoney1/animated_category/blob/master/gif.gif" alt="alt text" width="200"/>
 ![GitHub Logo](https://github.com/followthemoney1/animated_category/blob/master/gif.gif?raw=true)
 
