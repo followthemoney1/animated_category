@@ -1,3 +1,9 @@
+## [0.0.1-null-safety] - Update library to null safery
+
+* Update library to null-safety
+* Fix bugs
+
+
 ## [0.0.2] - TODO: Add release date.
 
 * TODO: Update read.me
