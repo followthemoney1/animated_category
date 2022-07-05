@@ -1,4 +1,4 @@
-## [0.0.1-null-safety] - Update library to null safery
+## [0.0.3] - Update library to null safery
 
 * Update library to null-safety
 * Fix bugs
