@@ -82,8 +82,8 @@ Complete example can be like:
 ```
 
 You also can add delay to your expanded animation. You can combine delay animation with expanded curves so your animation will be looks like one item pushing another with expanssion so it will be more natural:
-![GitHub Logo](file://gif2.gif?raw=true)
-![GitHub Logo](file://gif3.gif?raw=true)
+![GitHub Logo](gif2.gif?raw=true)
+![GitHub Logo](gif3.gif?raw=true)
 
 
 ```
