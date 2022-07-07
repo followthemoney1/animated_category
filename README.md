@@ -82,7 +82,22 @@ Complete example can be like:
                             ),
 ```
 
+You also can add delay to your expanded animation. You can combine delay animation with expanded curves so your animation will be looks like one item pushing another with expanssion so it will be more natural:
 
+```
+        ///mark: update widgets with delay or not
+        ///with delay we can use post updating for all wodgets
+        if (setClickedItemDelay) {
+          Future.delayed(Duration(milliseconds: (widget.clickedItemDelay / 100 * currentRow.iRow! * 1.3).round()), () {
+            _update(currentRow: currentRow, rowsList: rowsList);
+            _updateMatrix(currentRow, rows);
+          });
+        } else {
+          _update(currentRow: currentRow, rowsList: rowsList);
+
+          _updateMatrix(currentRow, rows);
+        }
+```
 
 All fields:
 ```

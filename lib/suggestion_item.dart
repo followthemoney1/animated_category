@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class SuggestionItem<T> {
@@ -9,8 +7,8 @@ class SuggestionItem<T> {
   double height;
   double x;
   double y;
-  int? iRow;
-  int? iColumn;
+  int iRow;
+  int iColumn;
   Key widgetKey;
 
   get selected => currentWeight > 1;
@@ -38,6 +36,8 @@ class SuggestionItem<T> {
     this.currentWeight = 1,
     required this.x,
     required this.y,
+    this.iColumn = 0,
+    this.iRow = 0,
   });
 }
 

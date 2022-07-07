@@ -7,68 +7,88 @@ import 'pr_ext.dart';
 
 class AnimatedCategory<T> extends StatefulWidget {
   final List items;
-  final Function itemSelected;
+
+  final Function(SuggestionItem e)? itemSelected;
+
   final double startSize;
+
   final double deltaSizeFirstTap;
+
   final double deltaSizeSecondTap;
-  final Widget Function(SuggestionItem item, T data) childBuilder;
-  final bool setClickedItemDelay;
-  final int clickedItemDelay;
+
+  final int? clickedItemDelay;
+
   final int itemAnimationDuration;
+
   final Curve itemCurve;
+
   final int stackAnimatedDuration;
+
   final Curve stackCurve;
+
   final Key key;
+
   final int columnNumber;
-  const AnimatedCategory(
-      {Key this.key = const ValueKey(101010),
-      required this.childBuilder,
-      required this.items,
-      required this.itemSelected,
-      this.setClickedItemDelay = false,
-      this.clickedItemDelay = 100,
-      this.startSize = 100.0,
-      this.deltaSizeSecondTap = 200.0,
-      this.deltaSizeFirstTap = 50.0,
-      this.itemAnimationDuration = 400,
-      this.itemCurve = Curves.bounceInOut,
-      this.stackAnimatedDuration = 600,
-      this.columnNumber = 4,
-      this.stackCurve = Curves.easeInOutQuint})
-      : super(key: key);
+
+  final Widget Function(SuggestionItem item, T data) childBuilder;
+
+  ///
+  const AnimatedCategory({
+    required this.childBuilder,
+    required this.items,
+    this.itemSelected,
+    this.key = const ValueKey(101010),
+    this.clickedItemDelay,
+    this.startSize = 100.0,
+    this.deltaSizeSecondTap = 200.0,
+    this.deltaSizeFirstTap = 50.0,
+    this.itemAnimationDuration = 400,
+    this.itemCurve = Curves.bounceInOut,
+    this.stackAnimatedDuration = 600,
+    this.columnNumber = 4,
+    this.stackCurve = Curves.easeInOutQuint,
+  }) : super(key: key);
 
   @override
   _AnimatedCategoryState createState() => _AnimatedCategoryState<T>(childBuilder);
 }
 
 class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProviderStateMixin {
-  Widget Function(SuggestionItem item, T data) childBuilder;
   _AnimatedCategoryState(this.childBuilder);
 
-  Map<int, List<SuggestionItem>> suggestionMatrix = {};
+  ///Matrix which will be used for creating and managing items
+  ///for grid view animation
+  Map<int, List<SuggestionItem>> initialSuggestionMatrix = {};
 
-  var needUpdateScrollWidth = true;
-  var maxWidth = 0;
+  ///Child builder which we are using for building children
+  ///as a callback function
+  late Widget Function(SuggestionItem item, T data) childBuilder;
 
-  late var startSize;
-  late var deltaSize;
-  late var deltaSizeBig;
+  bool needUpdateScrollWidth = true;
+  int maxWidth = 0;
+
+  late double startSize;
+  late double deltaSize;
+  late double deltaSizeBig;
 
   @override
   void initState() {
     super.initState();
 
+    ///initial setup
     startSize = widget.startSize;
     deltaSize = widget.deltaSizeFirstTap;
     deltaSizeBig = widget.deltaSizeSecondTap;
 
+    //add initial sizes
     int rowCount = (widget.items.length / widget.columnNumber).round();
 
+    ///add empty data to the matrix
     for (int m = 0; m < widget.columnNumber; m++) {
-      suggestionMatrix.addAll({m: []});
-      print(suggestionMatrix.length);
+      initialSuggestionMatrix.addAll({m: []});
     }
-    suggestionMatrix = Map.from(suggestionMatrix.map((key, value) {
+
+    initialSuggestionMatrix = Map.from(initialSuggestionMatrix.map((key, value) {
       final endIndex = (rowCount * (key + 1));
       return MapEntry(
           key,
@@ -86,36 +106,43 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
               width: startSize,
               height: startSize,
               currentWeight: 1,
-              x: (i) * startSize as double,
-              y: (key) * startSize as double,
+              x: (i) * startSize,
+              y: (key) * startSize,
             );
           }).toList());
     }));
-    childrenCards(setClickedItemDelay: widget.setClickedItemDelay);
+
+    _childrenCards(setClickedItemDelay: widget.clickedItemDelay != null);
+  }
+
+  @override
+  void didUpdateWidget(covariant AnimatedCategory oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    this.childBuilder = oldWidget.childBuilder;
   }
 
   @override
   Widget build(BuildContext context) {
-    updateWidth();
-    
+    _updateWidth();
+
     return FreeScrollView(
       child: Container(
-        width: maxWidth * startSize as double?,
-        height: widget.columnNumber * deltaSizeBig as double?,
-        child: Stack(
-          fit: StackFit.expand,
-          clipBehavior: Clip.hardEdge,
-          alignment: Alignment.topCenter,
-          children: cardsMatrixWidgets.values.toList(),
-        )),
+          width: maxWidth * startSize,
+          height: widget.columnNumber * deltaSizeBig,
+          child: Stack(
+            fit: StackFit.expand,
+            clipBehavior: Clip.hardEdge,
+            alignment: Alignment.topCenter,
+            children: _cardsMatrixWidgets.values.toList(),
+          )),
     );
   }
 
-  updateWidth() {
+  void _updateWidth() {
     if (needUpdateScrollWidth) {
       needUpdateScrollWidth = false;
       // maxWidth = 0;
-      suggestionMatrix.forEach((key, list) {
+      initialSuggestionMatrix.forEach((key, list) {
         final current = list.where((element) => element.currentWeight == 1).length;
         final currentExpand = list.where((element) => element.currentWeight == 2).length;
         final currentExpandMax = list.where((element) => element.currentWeight == 3).length;
@@ -126,36 +153,42 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
     }
   }
 
-  Map<Key, Widget> cardsMatrixWidgets = {};
-  childrenCards({required setClickedItemDelay}) {
-    suggestionMatrix.entries.forEach((columns) {
+  Map<Key, Widget> _cardsMatrixWidgets = {};
+  void _childrenCards({required setClickedItemDelay}) {
+    for (final columns in initialSuggestionMatrix.entries) {
+      ///get columns and values from them
       int iColumn = columns.key;
       List<SuggestionItem> rowsList = columns.value;
-      rowsList.asMap().entries.forEach((rows) {
+
+      ///for every column we need update our rows
+      for (final rows in rowsList.asMap().entries) {
+        ///get rows and values from them
         int iRow = rows.key;
         SuggestionItem currentRow = rows.value;
 
         currentRow.iColumn = iColumn;
         currentRow.iRow = iRow;
 
-        ///mark: update widgets
+        ///mark: update widgets with delay or not
+        ///with delay we can use post updating for all wodgets
         ///
+        ///[widget.clickedItemDelay] can't be null cause we doing check on [setClickedItemDelay] before
         if (setClickedItemDelay) {
-          Future.delayed(Duration(milliseconds: (widget.clickedItemDelay / 100 * currentRow.iRow! * 1.3).round()), () {
+          Future.delayed(Duration(milliseconds: (widget.clickedItemDelay! * (currentRow.iRow * 0.3)).round()), () {
             _update(currentRow: currentRow, rowsList: rowsList);
             _updateMatrix(currentRow, rows);
+            setState(() {});
           });
         } else {
           _update(currentRow: currentRow, rowsList: rowsList);
-
           _updateMatrix(currentRow, rows);
         }
-      });
-    });
+      }
+    }
   }
 
-  _updateMatrix(SuggestionItem currentRow, rows) {
-    cardsMatrixWidgets[currentRow.widgetKey] = AnimatedPositioned.fromRect(
+  void _updateMatrix(SuggestionItem currentRow, rows) {
+    _cardsMatrixWidgets[currentRow.widgetKey] = AnimatedPositioned.fromRect(
       // key: currentRow.widgetKey,
       duration: Duration(milliseconds: widget.stackAnimatedDuration),
       curve: widget.stackCurve, //fastOutSlowIn,
@@ -164,15 +197,15 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
     );
   }
 
-  _update({required final currentRow, final rowsList}) {
+  void _update({required SuggestionItem currentRow, required List<SuggestionItem> rowsList}) {
     if (currentRow.iRow > 0) {
       calcOverflowLeft(rowsList.elementAt(currentRow.iRow - 1), currentRow);
     }
 
     if (currentRow.iColumn > 0) {
-      calcOverflowTop(suggestionMatrix[currentRow.iColumn - 1]!.elementAt(currentRow.iRow), currentRow);
+      calcOverflowTop(initialSuggestionMatrix[currentRow.iColumn - 1]!.elementAt(currentRow.iRow), currentRow);
 
-      calcOverflowClosestElement(line: suggestionMatrix[currentRow.iColumn - 1]!, current: currentRow);
+      calcOverflowClosestElement(line: initialSuggestionMatrix[currentRow.iColumn - 1]!, current: currentRow);
     }
   }
 
@@ -212,14 +245,14 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
       child: Padding(padding: EdgeInsets.all(8), child: childBuilder(e, e.data)).addOnTap(
         onLongPress: () {
           onLongPressItem(e);
-          childrenCards(setClickedItemDelay: widget.setClickedItemDelay);
+          _childrenCards(setClickedItemDelay: widget.clickedItemDelay != null);
           setState(() {
             needUpdateScrollWidth = true;
           });
         },
         onTap: () {
           onTapItem(e);
-          childrenCards(setClickedItemDelay: widget.setClickedItemDelay);
+          _childrenCards(setClickedItemDelay: widget.clickedItemDelay != null);
           setState(() {
             needUpdateScrollWidth = true;
           });
@@ -228,7 +261,7 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
     );
   }
 
-  onTapItem(SuggestionItem e) {
+  void onTapItem(SuggestionItem e) {
     if (e.currentWeight <= 1) {
       e.currentWeight = e.currentWeight + 1;
       e.height = e.height + deltaSize;
@@ -238,10 +271,10 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
       e.height = startSize;
       e.width = startSize;
     }
-    widget.itemSelected(e);
+    widget.itemSelected?.call(e);
   }
 
-  onLongPressItem(
+  void onLongPressItem(
     SuggestionItem e,
   ) {
     if (e.currentWeight < 3) {
@@ -253,6 +286,6 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
       e.height = startSize;
       e.width = startSize;
     }
-    widget.itemSelected(e);
+    widget.itemSelected?.call(e);
   }
 }
