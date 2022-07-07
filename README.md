@@ -83,6 +83,8 @@ Complete example can be like:
 ```
 
 You also can add delay to your expanded animation. You can combine delay animation with expanded curves so your animation will be looks like one item pushing another with expanssion so it will be more natural:
+<img src="https://github.com/followthemoney1/animated_category/blob/master/gif2.gif" alt="alt text" width="500"/>
+<img src="https://github.com/followthemoney1/animated_category/blob/master/gif3.gif" alt="alt text" width="500"/>
 
 ```
         ///mark: update widgets with delay or not
