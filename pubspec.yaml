@@ -1,11 +1,11 @@
 name: animated_category
 description: Flutter library for picking category
-version: 0.0.3+1
+version: 0.1.0
 homepage: https://github.com/followthemoney1
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
-  flutter: ">=2.2.3"
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:

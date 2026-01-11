@@ -13,7 +13,7 @@ Or you can check full example video in files ```video.mp4```
 First you need to add a library to `pubspec.yaml`:
 ```
 dependencies:
-  animated_category: any
+  animated_category: ^0.1.0
 ```
 
 Add to you files where used:
@@ -26,8 +26,9 @@ import 'package:animated_category/animated_category.dart';
 
 ```
 AnimatedCategory<MyData>(
-          childBuilder: (MyData item) {
+          childBuilder: (SuggestionItem item, MyData data) {
            //TODO: return widget which you will be use
+           return Container(); 
           },
           startSize: itemSize,
           deltaSizeFirstTap: itemSize / 3,
@@ -45,7 +46,7 @@ Complete example can be like:
                               deltaSizeFirstTap: itemSize / 2,
                               deltaSizeSecondTap: itemSize * 1.8,
                               columnNumber: 2,
-                              setClickedItemDelay: false,
+                              clickedItemDelay: null,
                               items: controller.userPosts,
                               itemSelected: (SuggestionItem i) {},
                               childBuilder: (SuggestionItem item, UserPost data) {
@@ -89,32 +90,36 @@ You also can add delay to your expanded animation. You can combine delay animati
         ///mark: update widgets with delay or not
         ///with delay we can use post updating for all wodgets
         if (setClickedItemDelay) {
-          Future.delayed(Duration(milliseconds: (widget.clickedItemDelay / 100 * currentRow.iRow! * 1.3).round()), () {
+          Future.delayed(Duration(milliseconds: (widget.clickedItemDelay! * (currentRow.iRow * 0.3)).round()), () {
             _update(currentRow: currentRow, rowsList: rowsList);
-            _updateMatrix(currentRow, rows);
+            if (_lastRenderedRects[currentRow.widgetKey] != currentRow.rect) {
+              _updateMatrix(currentRow, rows);
+              setState(() {});
+            }
           });
         } else {
           _update(currentRow: currentRow, rowsList: rowsList);
-
-          _updateMatrix(currentRow, rows);
+          if (_lastRenderedRects[currentRow.widgetKey] != currentRow.rect) {
+             _updateMatrix(currentRow, rows);
+          }
         }
 ```
 
 All fields:
 ```
- const AnimatedCategory({
-      Key key,
-      @required this.childBuilder,
-      @required this.items,
-      @required this.itemSelected,
-      this.setClickedItemDelay = false,
-      this.clickedItemDelay = 100,
-      this.startSize = 100.0,
-      this.deltaSizeSecondTap = 200.0,
-      this.deltaSizeFirstTap = 50.0,
-      this.itemAnimationDuration = 400,
-      this.itemCurve = Curves.bounceInOut,
-      this.stackAnimatedDuration = 600,
-      this.stackCurve = Curves.easeInOutQuint,
- }): super(key: key);
+  const AnimatedCategory({
+    required this.childBuilder,
+    required this.items,
+    this.itemSelected,
+    this.key = const ValueKey(101010),
+    this.clickedItemDelay,
+    this.startSize = 100.0,
+    this.deltaSizeSecondTap = 200.0,
+    this.deltaSizeFirstTap = 50.0,
+    this.itemAnimationDuration = 400,
+    this.itemCurve = Curves.bounceInOut,
+    this.stackAnimatedDuration = 600,
+    this.columnNumber = 4,
+    this.stackCurve = Curves.easeInOutQuint,
+  }) : super(key: key);
 ```

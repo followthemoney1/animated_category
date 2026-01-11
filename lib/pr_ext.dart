@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /**
@@ -8,7 +7,11 @@ import 'package:flutter/material.dart';
 
 extension StringExt on String {
   String trimSpaceAndLCase() {
-    String _ = this.split(" ").join("").replaceAll(RegExp("[-=()*&^%#@!`~/:,.]"), "").toLowerCase();
+    String _ = this
+        .split(" ")
+        .join("")
+        .replaceAll(RegExp("[-=()*&^%#@!`~/:,.]"), "")
+        .toLowerCase();
     return _;
   }
 }
@@ -26,7 +29,8 @@ extension WidgetExtension on Widget {
     );
   }
 
-  Widget paddingOnly({double left = 0, double right = 0, double top = 0, double bottom = 0}) {
+  Widget paddingOnly(
+      {double left = 0, double right = 0, double top = 0, double bottom = 0}) {
     return Container(
       color: Colors.transparent,
       child: Padding(
@@ -106,8 +110,8 @@ class HexColor extends Color {
       if (color.length == 6) {
         color = "FF" + color;
       }
-    } on Exception catch (e) {
-      return Colors.white.value;
+    } on Exception {
+      return 0xFFFFFFFF; // Colors.white.value
     }
     return int.parse(color, radix: 16);
   }

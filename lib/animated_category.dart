@@ -50,10 +50,12 @@ class AnimatedCategory<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimatedCategoryState createState() => _AnimatedCategoryState<T>(childBuilder);
+  _AnimatedCategoryState createState() =>
+      _AnimatedCategoryState<T>(childBuilder);
 }
 
-class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProviderStateMixin {
+class _AnimatedCategoryState<T> extends State<AnimatedCategory>
+    with TickerProviderStateMixin {
   _AnimatedCategoryState(this.childBuilder);
 
   ///Matrix which will be used for creating and managing items
@@ -88,12 +90,17 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
       initialSuggestionMatrix.addAll({m: []});
     }
 
-    initialSuggestionMatrix = Map.from(initialSuggestionMatrix.map((key, value) {
+    initialSuggestionMatrix =
+        Map.from(initialSuggestionMatrix.map((key, value) {
       final endIndex = (rowCount * (key + 1));
       return MapEntry(
           key,
           widget.items
-              .getRange(rowCount * key, endIndex < widget.items.length ? endIndex : widget.items.length)
+              .getRange(
+                  rowCount * key,
+                  endIndex < widget.items.length
+                      ? endIndex
+                      : widget.items.length)
               .toList()
               .asMap()
               .entries
@@ -118,7 +125,7 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
   @override
   void didUpdateWidget(covariant AnimatedCategory oldWidget) {
     super.didUpdateWidget(oldWidget);
-    this.childBuilder = oldWidget.childBuilder;
+    this.childBuilder = widget.childBuilder;
   }
 
   @override
@@ -143,9 +150,12 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
       needUpdateScrollWidth = false;
       // maxWidth = 0;
       initialSuggestionMatrix.forEach((key, list) {
-        final current = list.where((element) => element.currentWeight == 1).length;
-        final currentExpand = list.where((element) => element.currentWeight == 2).length;
-        final currentExpandMax = list.where((element) => element.currentWeight == 3).length;
+        final current =
+            list.where((element) => element.currentWeight == 1).length;
+        final currentExpand =
+            list.where((element) => element.currentWeight == 2).length;
+        final currentExpandMax =
+            list.where((element) => element.currentWeight == 3).length;
 
         final all = current + (currentExpand * 2) + (currentExpandMax * 2);
         maxWidth = maxWidth < all ? all : maxWidth;
@@ -154,6 +164,7 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
   }
 
   Map<Key, Widget> _cardsMatrixWidgets = {};
+  Map<Key, Rect> _lastRenderedRects = {};
   void _childrenCards({required setClickedItemDelay}) {
     for (final columns in initialSuggestionMatrix.entries) {
       ///get columns and values from them
@@ -174,20 +185,29 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
         ///
         ///[widget.clickedItemDelay] can't be null cause we doing check on [setClickedItemDelay] before
         if (setClickedItemDelay) {
-          Future.delayed(Duration(milliseconds: (widget.clickedItemDelay! * (currentRow.iRow * 0.3)).round()), () {
+          Future.delayed(
+              Duration(
+                  milliseconds:
+                      (widget.clickedItemDelay! * (currentRow.iRow * 0.3))
+                          .round()), () {
             _update(currentRow: currentRow, rowsList: rowsList);
-            _updateMatrix(currentRow, rows);
-            setState(() {});
+            if (_lastRenderedRects[currentRow.widgetKey] != currentRow.rect) {
+              _updateMatrix(currentRow, rows);
+              setState(() {});
+            }
           });
         } else {
           _update(currentRow: currentRow, rowsList: rowsList);
-          _updateMatrix(currentRow, rows);
+          if (_lastRenderedRects[currentRow.widgetKey] != currentRow.rect) {
+            _updateMatrix(currentRow, rows);
+          }
         }
       }
     }
   }
 
   void _updateMatrix(SuggestionItem currentRow, rows) {
+    _lastRenderedRects[currentRow.widgetKey] = currentRow.rect;
     _cardsMatrixWidgets[currentRow.widgetKey] = AnimatedPositioned.fromRect(
       // key: currentRow.widgetKey,
       duration: Duration(milliseconds: widget.stackAnimatedDuration),
@@ -197,22 +217,32 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
     );
   }
 
-  void _update({required SuggestionItem currentRow, required List<SuggestionItem> rowsList}) {
+  void _update(
+      {required SuggestionItem currentRow,
+      required List<SuggestionItem> rowsList}) {
     if (currentRow.iRow > 0) {
       calcOverflowLeft(rowsList.elementAt(currentRow.iRow - 1), currentRow);
     }
 
     if (currentRow.iColumn > 0) {
-      calcOverflowTop(initialSuggestionMatrix[currentRow.iColumn - 1]!.elementAt(currentRow.iRow), currentRow);
+      calcOverflowTop(
+          initialSuggestionMatrix[currentRow.iColumn - 1]!
+              .elementAt(currentRow.iRow),
+          currentRow);
 
-      calcOverflowClosestElement(line: initialSuggestionMatrix[currentRow.iColumn - 1]!, current: currentRow);
+      calcOverflowClosestElement(
+          line: initialSuggestionMatrix[currentRow.iColumn - 1]!,
+          current: currentRow);
     }
   }
 
   bool calcOverflowClosestElement(
-      {required List<SuggestionItem> line, required SuggestionItem current, bool check = false}) {
+      {required List<SuggestionItem> line,
+      required SuggestionItem current,
+      bool check = false}) {
     for (SuggestionItem element in line) {
-      if (current.rect.intersect(element.rect).height > 0 && current.rect.intersect(element.rect).width > 0) {
+      if (current.rect.intersect(element.rect).height > 0 &&
+          current.rect.intersect(element.rect).width > 0) {
         if (current.rect.intersect(element.rect).height > 0) {
           if (!check) {
             current.y += element.rect.intersect(current.rect).height;
@@ -223,7 +253,8 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
     return false;
   }
 
-  void calcOverflowLeft(SuggestionItem prev, SuggestionItem current, {bool? withGravity}) {
+  void calcOverflowLeft(SuggestionItem prev, SuggestionItem current,
+      {bool? withGravity}) {
     if (prev.right > current.left) {
       current.x += prev.right - current.left;
     } else if (prev.right < current.left) {
@@ -232,7 +263,8 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
   }
 
   void calcOverflowTop(SuggestionItem prev, SuggestionItem current) {
-    if (current.x == prev.x) current.y += prev.rect.intersect(current.rect).height;
+    if (current.x == prev.x)
+      current.y += prev.rect.intersect(current.rect).height;
   }
 
   Widget item(SuggestionItem e, Key key) {
@@ -242,7 +274,8 @@ class _AnimatedCategoryState<T> extends State<AnimatedCategory> with TickerProvi
       curve: widget.itemCurve,
       height: e.height,
       width: e.width,
-      child: Padding(padding: EdgeInsets.all(8), child: childBuilder(e, e.data)).addOnTap(
+      child: Padding(padding: EdgeInsets.all(8), child: childBuilder(e, e.data))
+          .addOnTap(
         onLongPress: () {
           onLongPressItem(e);
           _childrenCards(setClickedItemDelay: widget.clickedItemDelay != null);

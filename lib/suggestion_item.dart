@@ -67,23 +67,14 @@ class CardItemWidget extends StatefulWidget {
   }
 }
 
-class CardItemWidgetState extends State<CardItemWidget> with TickerProviderStateMixin {
+class CardItemWidgetState extends State<CardItemWidget>
+    with TickerProviderStateMixin {
   final Shader linearGradient = LinearGradient(
     colors: <Color>[Color(0xFF9B51E0), Color(0xff5D3DF3)],
   ).createShader(Rect.fromLTWH(0.0, 0.0, 100.0, 70.0));
 
   @override
   Widget build(BuildContext context) {
-    final unselectedStyle =
-        Theme.of(context).textTheme.headline5!.copyWith(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold);
-
-    final selectedStyle = Theme.of(context)
-        .textTheme
-        .headline5!
-        .copyWith(foreground: (Paint()..shader = linearGradient), fontSize: 18, fontWeight: FontWeight.bold);
-    final selected = widget.el!.selected;
-    final superLike = widget.el!.superLike;
-
     return widget.child;
 
     // Stack(children: [

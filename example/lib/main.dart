@@ -15,7 +15,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page', key: UniqueKey(),),
+      home: MyHomePage(
+        title: 'Flutter Demo Home Page',
+        key: UniqueKey(),
+      ),
     );
   }
 }
@@ -30,8 +33,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -39,7 +40,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
     });
   }
 
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(),
       body: Center(
         child: AnimatedCategory<MyData>(
-          childBuilder: (_,MyData item) {
+          childBuilder: (_, MyData item) {
             print(item.img);
             return Card(
               child: Image.network(item.img),
